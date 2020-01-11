@@ -39,10 +39,32 @@ class Allocations(Requester):
             arguments:
               - prefix :(str) optional, specifies a string to filter allocations on based on an prefix.
                         This is specified as a querystring parameter.
-            returns: list
+            returns: list of dicts
             raises:
               - nomad.api.exceptions.BaseNomadException
               - nomad.api.exceptions.URLNotFoundNomadException
         """
         params = {"prefix": prefix}
         return self.request(method="get", params=params).json()
+
+    def get_allocations_by_status(self, status='running', prefix=None):
+        """ Lists plain list of allocations with particular status.
+            By default, returns only running allocations
+
+           https://www.nomadproject.io/docs/http/allocs.html
+            arguments:
+              - status :(str) optional, specifies a string to filter allocations on based on a status
+              - prefix :(str) optional, specifies a string to filter allocations on based on a prefix.
+                        This is specified as a querystring parameter.
+            returns: list
+            raises:
+              - nomad.api.exceptions.BaseNomadException
+              - nomad.api.exceptions.URLNotFoundNomadException
+        """
+        params = {"prefix": prefix}
+        alloc_list = []
+        for alloc in self.request(method="get", params=params).json():
+            if status == alloc['ClientStatus']:
+                alloc_list.append(alloc['ID'])
+
+        return alloc_list

@@ -55,3 +55,15 @@ class Allocation(Requester):
               - nomad.api.exceptions.URLNotFoundNomadException
         """
         return self.request(id, method="get").json()
+
+    def stop_allocation(self, id):
+        """ Stops a specific allocation.
+
+            https://www.nomadproject.io/api/allocations.html#stop-allocation
+            returns: dict
+            raises:
+              - nomad.api.exceptions.BaseNomadException
+              - nomad.api.exceptions.URLNotFoundNomadException
+
+        """
+        return self.request(id, "stop", method="post").json()
